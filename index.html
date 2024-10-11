@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic Background Text Example</title>
+    <style>
+        body {
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #000; /* Background color */
+            overflow: hidden; /* Prevent scrolling */
+            position: relative; /* For absolute positioning of text */
+        }
+
+        .heart {
+            width: 80px;
+            height: 80px;
+            fill: red; /* Heart color */
+            animation: heart 1s linear infinite;
+            filter: drop-shadow(0 0 10px rgba(221, 20, 20, 0.4)) drop-shadow(0 0 20px rgba(221, 20, 20, 0.4)); /* Darker red glow */
+            z-index: 1; /* Ensure heart is above the text */
+            position: absolute; /* To allow it to float */
+            top: 20%; /* Adjust this to place heart in the view */
+            left: 50%;
+            margin-left: -40px; /* Center the heart horizontally */
+        }
+
+        @keyframes heart {
+            0% {
+                transform: scale(1);
+            }
+            14% {
+                transform: scale(1.2);
+            }
+            28% {
+                transform: scale(1);
+            }
+            42% {
+                transform: scale(1.2);
+            }
+            70% {
+                transform: scale(1);
+            }
+        }
+    </style>
+</head>
+<body>
+    <svg class="heart">
+        <use xlink:href="#heart">
+            <symbol id="heart" viewBox="0 0 20 18">
+                <g transform="translate(-2 -3)">
+                    <path d="m13.35 20.13c-.76.69-1.93.69-2.69-.01l-.11-.1c-5.25-4.75-8.68-7.86-8.55-11.74.06-1.7.93-3.33 2.34-4.29 2.64-1.8 5.9-.96 7.66 1.1 1.76-2.06 5.02-2.91 7.66-1.1 1.41.96 2.28 2.59 2.34 4.29.14 3.88-3.3 6.99-8.55 11.76z"></path>
+                </g>
+            </symbol>
+        </use>
+    </svg>
+
+    <canvas></canvas>
+
+    <script>
+        // Initialising the canvas
+        var canvas = document.querySelector('canvas'),
+            ctx = canvas.getContext('2d');
+
+        // Setting the width and height of the canvas
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        // Setting up the text to spawn
+        var textToSpawn = 'Elif';
+
+        // Setting up the columns
+        var fontSize = 20,
+            columns = Math.floor(canvas.width / fontSize);
+
+        // Setting up the drops
+        var drops = [];
+        for (var i = 0; i < columns; i++) {
+            drops[i] = 1;
+        }
+	let textColor = '#ff0062';
+        // Setting up the draw function
+        function draw() {
+            ctx.fillStyle = 'rgba(0, 0, 0, .1)'; // Background effect
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            for (var i = 0; i < drops.length; i++) {
+                ctx.fillStyle = textColor ; // Text color
+                ctx.fillText(textToSpawn, i * fontSize, drops[i] * fontSize); // Draw "Elif"
+                drops[i]++; // Move drop downwards
+                
+                // Reset drop if it goes off the screen
+                if (drops[i] * fontSize > canvas.height && Math.random() > .95) {
+                    drops[i] = 0;
+                }
+            }
+        }
+
+        // Loop the animation
+        setInterval(draw, 55);
+        canvas.addEventListener('click', () => {
+            textColor = `#${Math.floor(Math.random() * 16777215).toString(16)}`; // Random color
+        });
+    </script>
+</body>
+</html>
